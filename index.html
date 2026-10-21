@@ -1,0 +1,504 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIS Student Hub</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b1120;
+      color: #e5e7eb;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    aside {
+      width: 230px;
+      background: #111827;
+      padding: 25px 16px;
+      border-right: 1px solid #263244;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 35px;
+      color: #93c5fd;
+    }
+
+    nav button {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      margin-bottom: 8px;
+      border: none;
+      border-radius: 9px;
+      text-align: left;
+      color: #cbd5e1;
+      background: transparent;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #263449;
+      color: white;
+    }
+
+    main {
+      flex: 1;
+      padding: 32px;
+      min-width: 0;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .muted {
+      color: #94a3b8;
+    }
+
+    .tag {
+      background: #172554;
+      color: #93c5fd;
+      border-radius: 20px;
+      padding: 9px 13px;
+      font-size: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: #151f30;
+      border: 1px solid #293548;
+      border-radius: 15px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      margin: 0 0 18px;
+    }
+
+    .big-number {
+      font-size: 35px;
+      font-weight: bold;
+      margin: 12px 0;
+    }
+
+    .positive {
+      color: #6ee7b7;
+      font-size: 13px;
+    }
+
+    .subject {
+      margin: 20px 0;
+    }
+
+    .subject-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .bar {
+      height: 7px;
+      background: #303c50;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .fill {
+      height: 100%;
+      background: #60a5fa;
+      border-radius: 10px;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 14px 0;
+      border-bottom: 1px solid #293548;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    .grade {
+      color: #93c5fd;
+      font-weight: bold;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .task-input {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      background: #0b1120;
+      border: 1px solid #374151;
+      color: white;
+      border-radius: 8px;
+      padding: 12px;
+    }
+
+    .add-button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 16px;
+      cursor: pointer;
+    }
+
+    .done {
+      opacity: 0.55;
+      text-decoration: line-through;
+    }
+
+    .task-check {
+      accent-color: #60a5fa;
+      margin-right: 10px;
+    }
+
+    @media (max-width: 700px) {
+      .layout {
+        display: block;
+      }
+
+      aside {
+        width: 100%;
+        padding: 15px;
+      }
+
+      .logo {
+        margin-bottom: 15px;
+      }
+
+      nav {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+      }
+
+      nav button {
+        width: auto;
+        white-space: nowrap;
+      }
+
+      main {
+        padding: 20px 14px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="layout">
+
+  <aside>
+    <div class="logo">🎓 NIS Hub</div>
+
+    <nav>
+      <button class="active" data-view="dashboard">
+        🏠 Главная
+      </button>
+      <button data-view="grades">
+        📊 Оценки
+      </button>
+      <button data-view="schedule">
+        📅 Расписание
+      </button>
+      <button data-view="planner">
+        ✅ Мои задачи
+      </button>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div>
+        <h1 id="page-title">Мой кабинет</h1>
+        <div class="muted">Твоё учебное пространство</div>
+      </div>
+      <div class="tag">ДЕМО-РЕЖИМ</div>
+    </div>
+
+    <section class="view active" id="dashboard">
+      <div class="grid">
+        <div class="card">
+          <div class="muted">Средний балл</div>
+          <div class="big-number" id="average">4.3 / 5</div>
+          <div class="positive">По демонстрационным оценкам</div>
+        </div>
+
+        <div class="card">
+          <div class="muted">Незавершённые задачи</div>
+          <div class="big-number" id="task-count">2</div>
+          <div class="muted">Твой список дел</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Успеваемость по предметам</h2>
+        <div id="subject-list"></div>
+      </div>
+
+      <div class="card">
+        <h2>Ближайшие занятия</h2>
+        <div class="item">
+          <span>09:00 · Математика</span>
+          <span class="muted">Кабинет 201</span>
+        </div>
+        <div class="item">
+          <span>10:00 · Информатика</span>
+          <span class="muted">Кабинет 305</span>
+        </div>
+        <div class="item">
+          <span>11:00 · Физика</span>
+          <span class="muted">Кабинет 210</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="grades">
+      <div class="card">
+        <h2>Мои оценки</h2>
+        <div id="grade-list"></div>
+        <p class="muted">
+          Все оценки придуманы для демонстрации.
+        </p>
+      </div>
+    </section>
+
+    <section class="view" id="schedule">
+      <div class="card">
+        <h2>Расписание на день</h2>
+        <div class="item">
+          <span>09:00 — Математика</span>
+          <span>Каб. 201</span>
+        </div>
+        <div class="item">
+          <span>10:00 — Информатика</span>
+          <span>Каб. 305</span>
+        </div>
+        <div class="item">
+          <span>11:00 — Физика</span>
+          <span>Каб. 210</span>
+        </div>
+        <div class="item">
+          <span>12:00 — Английский язык</span>
+          <span>Каб. 108</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="planner">
+      <div class="card">
+        <h2>Мои учебные задачи</h2>
+
+        <form class="task-input" id="task-form">
+          <input id="task-input"
+                 placeholder="Например, повторить алгебру..."
+                 maxlength="120"
+                 required>
+          <button class="add-button" type="submit">
+            Добавить
+          </button>
+        </form>
+
+        <div id="task-list"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  const subjects = [
+    { name: "Математика", score: 88, grade: 5 },
+    { name: "Информатика", score: 94, grade: 5 },
+    { name: "Физика", score: 76, grade: 4 },
+    { name: "Английский язык", score: 82, grade: 4 }
+  ];
+
+  let tasks = [
+    { text: "Повторить алгебру", done: false },
+    { text: "Подготовиться к тесту по физике", done: false }
+  ];
+
+  const titles = {
+    dashboard: "Мой кабинет",
+    grades: "Мои оценки",
+    schedule: "Расписание",
+    planner: "Мои задачи"
+  };
+
+  function renderSubjects() {
+    document.getElementById("subject-list").innerHTML =
+      subjects.map(s => `
+        <div class="subject">
+          <div class="subject-top">
+            <span>${s.name}</span>
+            <span>${s.score}%</span>
+          </div>
+          <div class="bar">
+            <div class="fill" style="width:${s.score}%"></div>
+          </div>
+        </div>
+      `).join("");
+  }
+
+  function renderGrades() {
+    document.getElementById("grade-list").innerHTML =
+      subjects.map(s => `
+        <div class="item">
+          <span>${s.name}</span>
+          <span class="grade">${s.grade} / 5</span>
+        </div>
+      `).join("");
+
+    const average = subjects.reduce(
+      (sum, s) => sum + s.grade, 0
+    ) / subjects.length;
+
+    document.getElementById("average").textContent =
+      average.toFixed(2) + " / 5";
+  }
+
+  function renderTasks() {
+    document.getElementById("task-list").innerHTML =
+      tasks.map((task, index) => `
+        <div class="item ${task.done ? "done" : ""}">
+          <label>
+            <input class="task-check"
+                   type="checkbox"
+                   data-index="${index}"
+                   ${task.done ? "checked" : ""}>
+            ${escapeHTML(task.text)}
+          </label>
+          <button class="add-button"
+                  type="button"
+                  data-delete="${index}">
+            Удалить
+          </button>
+        </div>
+      `).join("");
+
+    document.getElementById("task-count").textContent =
+      tasks.filter(t => !t.done).length;
+  }
+
+  function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  document.querySelectorAll("nav button").forEach(button => {
+    button.addEventListener("click", () => {
+      document.querySelectorAll("nav button").forEach(b =>
+        b.classList.remove("active")
+      );
+
+      document.querySelectorAll(".view").forEach(view =>
+        view.classList.remove("active")
+      );
+
+      button.classList.add("active");
+
+      const view = button.dataset.view;
+      document.getElementById(view).classList.add("active");
+      document.getElementById("page-title").textContent =
+        titles[view];
+    });
+  });
+
+  document.getElementById("task-form")
+    .addEventListener("submit", event => {
+      event.preventDefault();
+
+      const input = document.getElementById("task-input");
+      const text = input.value.trim();
+
+      if (!text) return;
+
+      tasks.push({ text, done: false });
+      input.value = "";
+      renderTasks();
+    });
+
+  document.getElementById("task-list")
+    .addEventListener("change", event => {
+      if (event.target.matches("[data-index]")) {
+        tasks[Number(event.target.dataset.index)].done =
+          event.target.checked;
+        renderTasks();
+      }
+    });
+
+  document.getElementById("task-list")
+    .addEventListener("click", event => {
+      const button = event.target.closest("[data-delete]");
+      if (!button) return;
+
+      tasks.splice(Number(button.dataset.delete), 1);
+      renderTasks();
+    });
+
+  renderSubjects();
+  renderGrades();
+  renderTasks();
+</script>
+</body>
+</html>
+
